@@ -4,7 +4,10 @@ function getBlock(n, i, j) {
 }
 
 function getEmptyBlock(i,j, n) {
-	return `<div class="block-${i}-${j} empty">${n}</div>`;
+	return `<div class="block-${i}-${j} empty">
+				<div class="solution"></div>
+				<div class="notes"></div>
+			</div>`;
 }
 
 
@@ -199,28 +202,43 @@ function solve(sudoku) {
 
 
 // given a solved sudoku and the number of steps, prints out the sudoku
-function showSudoku(sudoku,i) {
-	var sudokuText = "";
-	window.storage.dispatch({ type: 'SUDOKU_SOLUTION', sudoku });
+function showSudoku(sudoku) {
+	let sudokuText="";
 	const pos = getRandomPositions();
-	for (var i=0; i<=8; i++) {
-		for (var j=0; j<=8; j++) {
-			if(pos.match(new RegExp(`\/${i}-${j}\/`)) !== null) {
-				sudokuText+= getBlock(sudoku[i*9+j], i, j);
+	window.storage.dispatch({ type: 'SUDOKU_SOLUTION', sudoku });
+	for(let x=0; x < 9; x++) {
+		for(let y=0; y < 9; y++) {
+			if(pos.match(new RegExp(`\/${x}-${y}\/`)) !== null) {
+				sudokuText+= getBlock(sudoku[x*9+y], x, y);
 				window.storage.dispatch({
-					type: 'SET_VALUE', pos: i*9+j, value: sudoku[i*9+j]
+					type: 'SET_VALUE', pos: x*9+y, value: sudoku[x*9+y]
 				});
 			} else {
-				sudokuText+= getEmptyBlock(i,j,sudoku[i*9+j]);
+				sudokuText+= getEmptyBlock(x,y);
 			}
 		}
-		const BB = document.createElement('div');
-		BB.className = 'big-block i-' + i;
-		BB.innerHTML = sudokuText;
-		sudokuText = '';
-		document.querySelector('.main-grid').appendChild(BB); 
+	}
+	const temp = document.createElement('div');
+	temp.innerHTML = sudokuText;
+	// create the Big blocks(3 x 3)
+	for(let i=0; i < 9; i = i + 3) {
+		for(let j=0; j < 9; j = j + 3 ) {
+			const BB =  rec(j, i, temp);
+			document.querySelector('.main-grid').appendChild(BB);
+		}
 	}
 	console.log('Finish');
+}
+
+function rec(n, x, el) {
+	const BB = document.createElement('div');
+	BB.className = 'big-block';
+	for(let i=x; i < x + 3; i++) {
+		for(let j=n; j < n +3; j++) {
+			BB.appendChild(el.querySelector(`.block-${i}-${j}`))
+		}
+	}
+	return BB;
 }
 
 /**

@@ -10,8 +10,20 @@ function emptyBlockListeners() {
 	blocks.forEach(block => {
 		block.addEventListener('click', () => {
 			selectLine(block);
+		});
+		block.addEventListener('contextmenu', (ev) => {
+			ev.preventDefault();
+			selectNoteLine(block);
 		})
 	})
+}
+
+function selectNoteLine(block) {
+	const selectedBefore = document.querySelectorAll('.selected');
+	const selectedNoteBefore = document.querySelectorAll('.note-selected');
+	selectedNoteBefore.forEach(old => { old.classList.remove('note-selected') });
+	selectedBefore.forEach(old => { old.classList.remove('selected') });
+	block.classList.add('note-selected')
 }
 
 /**
@@ -20,6 +32,8 @@ function emptyBlockListeners() {
  */
 function selectLine(block) {
 	const selectedBefore = document.querySelectorAll('.selected');
+	const selectedNoteBefore = document.querySelectorAll('.note-selected');
+	selectedNoteBefore.forEach(old => { old.classList.remove('note-selected') });
 	selectedBefore.forEach(old => { old.classList.remove('selected') });
 	block.classList.add('selected')
 }
@@ -31,13 +45,18 @@ function keyboardListener() {
 		const key = parseInt(ev.key);
 		if(!isNaN(key)) {
 			const selected = document.querySelector('.selected');
+			const noteSelected = document.querySelector('.note-selected');
 			if (selected !== null) {
 				window.storage.dispatch({
 					type: 'SET_VALUE',
 					pos: getLinearPosition(selected),
 					value: key
 				});
-				selected.innerHTML = key !== 0 ? key : "";
+				selected.querySelector('.solution').innerHTML = key !== 0 ? key : "";
+				selected.querySelector('.notes').innerHTML = '';
+			} else if(noteSelected !== null) {
+				noteSelected.querySelector('.solution').innerHTML = '';
+				noteSelected.querySelector('.notes').innerHTML += `|${key}|`;
 			}
 		}
 	})
