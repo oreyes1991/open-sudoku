@@ -51,7 +51,7 @@ html, body {
 }
 
 .header {
-	position: fixed;
+	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -61,6 +61,7 @@ html, body {
 	color: #fff;
 	box-sizing: border-box;
 	display: grid;
+	grid-template-columns: .8fr 1fr;
 }
 
 .header > h3 {
@@ -84,4 +85,14 @@ html, body {
 	place-content: center;
 	color: #666666;
 	font-size: 14px;
+}
+
+.mobile-controls {
+	display: none;
+}
+
+.options {
+	display: grid;
+	grid-auto-flow: column;
+	place-items: center;
 }

@@ -1,0 +1,28 @@
+@media only screen and (min-device-width: 300px) 
+	and (max-device-width: 800px) 
+	and (orientation: portrait) 
+	{
+		.main-grid {
+			height: calc(100vh - 180px);
+		}
+		.mobile-controls {
+			display: grid;
+			grid-auto-flow: column;
+			margin: 10px 5px;
+			padding: 5px;
+			place-items: center;
+			border: 1px solid #d3d3d3;
+		}
+		[class^="slector-"] {
+			padding-top: 5px;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			border: 1px solid #d3d3d3;
+			transition: all .3s ease-in-out;
+		}
+		[class^="slector-"]:hover {
+			background-color: var(--main-purple);
+			color: #ffffff;
+		}
+	}

@@ -13,11 +13,31 @@ function getEmptyBlock(i,j, n) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-	// we start with an empty sudoku...
-	var sudoku = new Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-	// ... and we solve it!!
-	solve(sudoku);
-})
+	let savedGame = localStorage.getItem('saved_sudoku');
+	if(!savedGame) {
+		var sudoku = new Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+		solve(sudoku);
+	} else {
+		savedGame = JSON.parse(savedGame);
+		showSudoku(savedGame.sudoku, savedGame.positions);
+		loadedGame(savedGame.userSolve);
+		window.storage.dispatch({ type: 'LOAD_SAVED_GAME', savedGame})
+	}
+});
+
+function loadedGame(userSolve) {
+	for(let i=0; i < 9; i++) {
+		for(let j=0; j < 9; j++) {
+			const block = document.querySelector(`.block-${i}-${j}`)
+			const key = userSolve[i*9 + j];
+			if (key !== 0){
+				window.storage.dispatch({ type: 'SET_VALUE', pos: i*9+j, value: userSolve[i*9+j]})
+				block.querySelector('.solution').innerHTML = key;
+			}
+			
+		}
+	}
+}
 
 // given a sudoku cell, returns the row
 function returnRow(cell) {
@@ -197,15 +217,15 @@ function solve(sudoku) {
 		}
 		sudoku[whatToTry] = attempt;
 	}
-	showSudoku(sudoku,i);
+	const pos = getRandomPositions();
+	showSudoku(sudoku,pos);
 }
 
 
 // given a solved sudoku and the number of steps, prints out the sudoku
-function showSudoku(sudoku) {
+function showSudoku(sudoku, pos) {
 	let sudokuText="";
-	const pos = getRandomPositions();
-	window.storage.dispatch({ type: 'SUDOKU_SOLUTION', sudoku });
+	window.storage.dispatch({ type: 'SUDOKU_SOLUTION', sudoku, positions: pos });
 	for(let x=0; x < 9; x++) {
 		for(let y=0; y < 9; y++) {
 			if(pos.match(new RegExp(`\/${x}-${y}\/`)) !== null) {
