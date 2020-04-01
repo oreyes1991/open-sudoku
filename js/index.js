@@ -1,6 +1,6 @@
 
 function getBlock(n, i, j) {
-	return `<div class="block-${i}-${j}">${n}</div>`;
+	return `<div class="block-${i}-${j}"><div class="solution">${n}</div></div>`;
 }
 
 function getEmptyBlock(i,j, n) {
@@ -15,16 +15,30 @@ function getEmptyBlock(i,j, n) {
 document.addEventListener('DOMContentLoaded', () => {
 	let savedGame = localStorage.getItem('saved_sudoku');
 	if(!savedGame) {
-		var sudoku = new Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-		solve(sudoku);
+		newSudoku();
 	} else {
 		savedGame = JSON.parse(savedGame);
-		showSudoku(savedGame.sudoku, savedGame.positions);
-		loadedGame(savedGame.userSolve);
-		window.storage.dispatch({ type: 'LOAD_SAVED_GAME', savedGame})
+		load(savedGame);
 	}
 });
 
+function newSudoku() {
+	document.querySelector('.main-grid').innerHTML = "";
+	var sudoku = new Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	solve(sudoku);
+}
+
+function load(savedGame) {
+	document.querySelector('.main-grid').innerHTML = "";
+	showSudoku(savedGame.sudoku, savedGame.positions);
+	loadedGame(savedGame.userSolve);
+	window.storage.dispatch({ type: 'LOAD_SAVED_GAME', savedGame})
+}
+
+/**
+ * load game from array
+ * @param {Array} userSolve block solved by user
+ */
 function loadedGame(userSolve) {
 	for(let i=0; i < 9; i++) {
 		for(let j=0; j < 9; j++) {

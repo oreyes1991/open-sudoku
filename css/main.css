@@ -13,7 +13,7 @@
 }
 
 html, body {
-	height: 100%;
+	height: calc(100% - 70px)
 }
 
 .big-block{
@@ -95,4 +95,20 @@ html, body {
 	display: grid;
 	grid-auto-flow: column;
 	place-items: center;
+	place-self: center end;
+	column-gap: 10px;
+}
+
+.options > * {
+	cursor: pointer;
+	transition: all .3s ease-in-out;
+}
+
+.options > *:hover {
+	transform: scale(1.1);
+	box-shadow: 0px 0px 20px 1px;
+}
+
+.hidden {
+	display: none !important;
 }
